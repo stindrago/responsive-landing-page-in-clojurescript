@@ -32,8 +32,8 @@ Demo available at [[https://demo.dragoi.me/responsive-landing-page-in-clojurescr
 Install requirements.
 
 - [[https://clojure.org][Clojure]]
-- [[https://nodejs.org][https://openjdk.org]]
-- [[https://nodejs.org/en][nodejs]]
+- [[https://openjdk.org][Java]]
+- [[https://nodejs.org][nodejs]]
 
 Download the project and install dependencies.
 
