@@ -1,0 +1,194 @@
+:PROPERTIES:
+:ID:       e5c7d12a-38da-47b4-9cfb-11bf143f26bf
+:END:
+#+TITLE: Responsive landing page in Clojure Script
+#+AUTHOR: Costin Dragoi
+#+DATE: [2023-02-21 Tue]
+#+FILETAGS: project youtube clojure
+#+CATEGORY: public
+
+* 👋 Hello there
+
+- Demo :: https://demo.dragoi.me/responsive-landing-page-in-clojurescript
+- Repository :: https://git.dragoi.me/costin/responsive-landing-page-in-clojurescript
+
+* 💻 The tools for the job
+
+- ClojureScript :: https://clojurescript.org -> The language.
+- shadow-cljs :: https://github.com/thheller/shadow-cljs -> A build tool.
+- reagent :: https://github.com/reagent-project/reagent -> React in Clojure.
+- TailwindCSS :: https://tailwindcss.com -> CSS Framework.
+- DaisyUI :: https://daisyui.com -> Components library.
+
+Honorable mentions.
+
+- tailwind-lsp :: https://github.com/merrickluo/lsp-tailwindcss -> TailwindCSS IntelliSense.
+
+* 💿 Prerequisites
+
+- Clojure :: https://clojure.org
+- Java :: https://openjdk.org
+- NodeJS :: https://nodejs.org/en
+- NPM :: https://www.npmjs.com
+- NPXN PX :: https://docs.npmjs.com/cli/v7/commands/npx
+
+* ▶️ Initial setup
+
+Use ~C-c C-v t~ to export source blocks to file.
+
+** IniInitializee shadow-cljs project
+
+#+begin_src shell :results none
+npx create-cljs-project ~/Desktop/responsive-landing-page-in-clojurescript
+#+end_src
+
+** Add the scripts to ~package.json~
+
+#+begin_src js :tangle "~/Desktop/responsive-landing-page-in-clojurescript/package.json" :eval no
+{
+  "scripts": {
+    "release": "run-s css:release init:release cljs:release",
+    "watch": "run-p css:watch init:watch cljs:watch",
+    "init:release": "mkdir -p target/dist && cp -r resources/{assets,index.html} target/dist",
+    "init:watch": "mkdir -p target/build && cp -r resources/{assets,index.html} target/build",
+    "css:release": "postcss resources/css/tailwind.css --output target/dist/css/main.css --verbose",
+    "css:watch": "postcss resources/css/tailwind.css --output target/build/css/main.css --watch --verbose",
+    "cljs:release": "clojure -M:cljs release app",
+    "cljs:watch": "clojure -M:cljs watch app"
+  }
+}
+#+end_src
+
+** Initialise the packages
+
+#+begin_src shell :results none
+cd ~/Desktop/responsive-landing-page-in-clojurescript
+npm install react react-dom shadow-cljs tailwindcss daisyui postcss postcss-cli autoprefixer npm-run-all --save
+#+end_src
+
+** Edit ~deps.edn~
+
+#+begin_src clojure :results none :tangle "~/Desktop/responsive-landing-page-in-clojurescript/deps.edn"
+{:paths ["src/main"]
+ :aliases {:cljs {:extra-deps {thheller/shadow-cljs {:mvn/version "2.21.0"}
+                               reagent/reagent {:mvn/version "1.2.0"}}
+                  :main-opts   ["-m" "shadow.cljs.devtools.cli"]}}}
+#+end_src
+
+** Edit ~shadow-cljs.edn~
+
+#+begin_src clojure :results none :tangle "~/Desktop/responsive-landing-page-in-clojurescript/shadow-cljs.edn"
+{:deps {:aliases [:cljs]}
+ :dev-http {8080 "target/build"}
+ :builds {:app {:target :browser
+                :asset-path "/js"
+                :devtools {:before-load  landing-page.app/stop
+                           :after-load   landing-page.app/start}
+                :dev {:output-dir "target/build/js"}
+                :release {:output-dir "target/dist/js"}
+                :modules {:main {:init-fn landing-page.app/main}}}}}
+#+end_src
+
+** Configure TailwindCSS
+
+*** Edit ~tailwind.config.js~.
+
+- Add *Roboto* font family.
+- Add *DaisyUI* plugin.
+
+#+begin_src js :tangle "~/Desktop/responsive-landing-page-in-clojurescript/tailwind.config.js" :eval no
+module.exports = {
+  content: ["./target/**/*.{html,js}"],
+  Theme: {
+    extend: {
+        fontFamily: {
+            sans: ['Roboto', 'sans-serif'],
+        },
+    },
+  },
+  plugins: [require('daisyui')],
+}
+#+end_src
+
+*** Edit ~tailwind.css~
+
+- Add essentials.
+
+#+begin_src css :tangle "~/Desktop/responsive-landing-page-in-clojurescript/resources/css/tailwind.css" :mkdirp yes :eval no
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+#+end_src
+
+*** Edit ~postcss.config.js~
+
+#+begin_src js :tangle "~/Desktop/responsive-landing-page-in-clojurescript/postcss.config.js" :eval no
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  }
+}
+#+end_src
+
+** Add ~index.html~
+
+#+begin_src html :tangle "~/Desktop/responsive-landing-page-in-clojurescript/resources/index.html" :mkdirp yes :eval no
+<!doctype html>
+<html class="scroll-smooth">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="assets/images/1F49F.svg" />
+    <link rel="stylesheet" href="css/main.css" />
+    <title>Responsive landing page in ClojureScript</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
+#+end_src
+
+** Edit ~app.cljs~
+
+- An initial setup to get started.
+
+#+begin_src clojure :tangle "~/Desktop/responsive-landing-page-in-clojurescript/src/main/landing_page/frontend/app.cljs" :mkdirp yes :eval no
+(ns landing-page.app
+  (:require [reagent.dom :as rd]))
+
+(defn app []
+  [:div [:h1 "Hello " [:span {:class "underline decoration-emerald-500"} "World"] "!"]])
+
+(defn start []
+  (rd/render [app]
+             (.getElementById js/document "app")))
+
+(defn main []
+  (start))
+#+end_src
+
+** Run development
+
+#+begin_src shell :results none
+cd ~/Desktop/responsive-landing-page-in-clojurescript
+npm install
+npm run watch
+#+end_src
+
+* ⏭️ Code the landing page
+
+- Edit ~src/main/landing_page/*~.
+
+* ⏏️ Conclusions
+
+🙏 Thanks for watching.
+
+1. 🔔 Subscribe.
+2. 👍 Like.
+3. 💬 Comment.
+
+See you in the next video! ✌❤

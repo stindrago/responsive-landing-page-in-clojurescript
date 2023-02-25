@@ -1,0 +1,9 @@
+{:deps {:aliases [:cljs]}
+ :dev-http {8080 "target/build"}
+ :builds {:app {:target :browser
+                :asset-path "/js"
+                :devtools {:before-load  landing-page.app/stop
+                           :after-load   landing-page.app/start}
+                :dev {:output-dir "target/build/js"}
+                :release {:output-dir "target/dist/js"}
+                :modules {:main {:init-fn landing-page.app/main}}}}}
