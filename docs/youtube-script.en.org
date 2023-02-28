@@ -40,11 +40,12 @@ Use ~C-c C-v t~ to export source blocks to file.
 
 #+begin_src shell :results none
 npx create-cljs-project ~/Desktop/responsive-landing-page-in-clojurescript
+cd ~/Desktop/responsive-landing-page-in-clojurescript
 #+end_src
 
 ** Add the scripts to ~package.json~
 
-#+begin_src js :tangle "~/Desktop/responsive-landing-page-in-clojurescript/package.json" :eval no
+#+begin_src json :tangle "~/Desktop/responsive-landing-page-in-clojurescript/package.json" :eval no
 {
   "scripts": {
     "release": "run-s css:release init:release cljs:release",
@@ -62,7 +63,6 @@ npx create-cljs-project ~/Desktop/responsive-landing-page-in-clojurescript
 ** Initialise the packages
 
 #+begin_src shell :results none
-cd ~/Desktop/responsive-landing-page-in-clojurescript
 npm install react react-dom shadow-cljs tailwindcss daisyui postcss postcss-cli autoprefixer npm-run-all --save
 #+end_src
 
@@ -156,7 +156,7 @@ module.exports = {
 
 - An initial setup to get started.
 
-#+begin_src clojure :tangle "~/Desktop/responsive-landing-page-in-clojurescript/src/main/landing_page/frontend/app.cljs" :mkdirp yes :eval no
+#+begin_src clojure :tangle "~/Desktop/responsive-landing-page-in-clojurescript/src/main/landing_page/app.cljs" :mkdirp yes :eval no
 (ns landing-page.app
   (:require [reagent.dom :as rd]))
 

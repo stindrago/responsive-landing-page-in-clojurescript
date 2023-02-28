@@ -1,7 +1,7 @@
 :PROPERTIES:
 :ID:       3d141e33a26-4752-8c9f-862087bc639a
 :END:
-#+TITLE: www.dragoi.me
+#+TITLE: Responsive landing page in ClojureScript
 #+AUTHOR: Costin Dragoi
 #+DATE: [2023-02-25 Sat]
 #+FILETAGS: project clojure
@@ -9,7 +9,7 @@
 
 * About
 
-How to build a simple landing page in Clojurescript and TaliwndCSS.
+How to build a simple landing page in ClojureScript and TaliwndCSS.
 
 Demo available at [[https://demo.dragoi.me/responsive-landing-page-in-clojurescript/][demo.dragoi.me]].
 
